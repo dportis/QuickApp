@@ -34,13 +34,12 @@ fun AppNavHost(navController: NavHostController, repository: PostRepository) {
             }},
                 onCancel = {navController.popBackStack()})
         }
-        composable("post_detail/{postID}") { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("postID")?.toInt() ?: 0
-            println(id)
+        composable("post_detail/{postId}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("postId")?.toInt() ?: 0
             val viewModel : PostDetailViewModel = viewModel(
                 factory = PostDetailViewModelFactory(repository)
             )
-            PostDetailScreen(detailViewModel = viewModel, postID = id, onBack = {navController.popBackStack()})
+            PostDetailScreen(detailViewModel = viewModel, postId = id, onBack = {navController.popBackStack()})
         }
     }
 }

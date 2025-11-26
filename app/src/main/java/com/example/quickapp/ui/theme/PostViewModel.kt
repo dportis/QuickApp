@@ -1,9 +1,5 @@
 package com.example.quickapp.ui.theme
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.quickapp.domain.repo.PostRepository
@@ -50,7 +46,7 @@ class PostViewModel(private val repository: PostRepository) : ViewModel() {
         viewModelScope.launch {
             try {
                 val newPost = Post(
-                    userID = 1,
+                    userId = 1,
                     id = 0,
                     title = title,
                     body = body

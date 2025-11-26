@@ -3,6 +3,7 @@ package com.example.quickapp.ui.theme
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.quickapp.domain.repo.PostRepository
+import com.example.quickapp.model.Comments
 import com.example.quickapp.model.Post
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,8 +11,10 @@ import kotlinx.coroutines.launch
 
 class PostDetailViewModel(private val repository: PostRepository) : ViewModel() {
     private val _post = MutableStateFlow<Post?>(null)
+    private val _comments = MutableStateFlow<List<Comments>>(emptyList())
 
     val post: StateFlow<Post?> = _post
+    val comments: StateFlow<List<Comments>> = _comments
 
 
     fun loadPost(id: Int) {
@@ -23,4 +26,25 @@ class PostDetailViewModel(private val repository: PostRepository) : ViewModel() 
             }
         }
     }
+
+    fun loadAllComments() {
+        viewModelScope.launch {
+            try {
+                _comments.value = repository.getComments()
+            } catch (e: Exception) {
+                println(e)
+            }
+        }
+    }
+
+    fun loadPostComments(id: Int) {
+        viewModelScope.launch {
+            try {
+                _comments.value = repository.getPostComments(id)
+            } catch (e: Exception){
+                println(e)
+            }
+        }
+    }
+
 }

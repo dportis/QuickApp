@@ -1,5 +1,6 @@
 package com.example.quickapp.domain
 
+import com.example.quickapp.model.Comments
 import com.example.quickapp.model.Post
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -15,4 +16,10 @@ interface PostApi {
 
     @POST("posts")
     suspend fun createPost(@Body post: Post) : Post
+
+    @GET("comments")
+    suspend fun getComments() : List<Comments>
+
+    @GET("posts/{id}/comments")
+    suspend fun getPostComments(@Path("id") id: Int) : List<Comments>
 }
