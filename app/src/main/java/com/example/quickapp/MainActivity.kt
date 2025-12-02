@@ -1,7 +1,6 @@
 package com.example.quickapp
 
 import android.os.Bundle
-import android.widget.Space
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -30,7 +29,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -62,6 +60,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -101,6 +100,9 @@ class MainActivity : ComponentActivity() {
 fun PostScreen(viewModel: PostViewModel, onAddPostClick: () -> Unit, onPostClick: (Int) -> Unit, modifier: Modifier = Modifier) {
     val postList by viewModel.filteredPosts.collectAsState()
     val query by viewModel.query.collectAsState()
+    val shuffledPostList = remember(postList) {
+        postList.shuffled()
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -135,7 +137,7 @@ fun PostScreen(viewModel: PostViewModel, onAddPostClick: () -> Unit, onPostClick
             .padding(innerPadding)
             .fillMaxSize()
             .padding(16.dp)) {
-            items(items = postList) { post ->
+            items(items = shuffledPostList) { post ->
                 PostItem(post, onPostClick, modifier)
             }
         }
@@ -167,7 +169,7 @@ fun AddPostScreen(viewModel: PostViewModel,onPostCreated :(String, String) -> Un
                 title = {
                     Text ("Add Title") },
                 navigationIcon = {
-                    IconButton(onClick = onCancel) { Icon(Icons.Default.ArrowBack, contentDescription = "cancel")
+                    IconButton(onClick = onCancel) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "cancel")
                     }
                 }
             )
@@ -209,9 +211,11 @@ fun PostDetailScreen(
     detailViewModel: PostDetailViewModel,
     postId: Int,
     onBack: () -> Unit,
+    onPostsClicked: (Int) -> Unit,
     modifier: Modifier = Modifier) {
     val postState = detailViewModel.post.collectAsState()
     val commentState = detailViewModel.comments.collectAsState()
+    val userPostsState = detailViewModel.posts.collectAsState()
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -220,6 +224,13 @@ fun PostDetailScreen(
     LaunchedEffect(postId) {
         detailViewModel.loadPost(postId)
         detailViewModel.loadPostComments(postId)
+    }
+
+    LaunchedEffect(postState.value) {
+        val loadedPost = postState.value
+        if (loadedPost != null) {
+            detailViewModel.loadUserPosts(loadedPost.userId)
+        }
     }
 
     Scaffold(
@@ -256,7 +267,12 @@ fun PostDetailScreen(
                     title = postState.value?.title ?: "Oops",
                     commentCount = commentState.value.size,
                     onCommentsClick = { showBottomSheet = true},
-                    collapseFraction = collapseFraction)
+                    userPosts = userPostsState.value,
+                    collapseFraction = collapseFraction,
+                    onPostsClick = {
+                        val currentUserId = postState.value?.userId ?: 0
+                        onPostsClicked(currentUserId)
+                    })
             }
             item {
                 PostBody(body = longerBody)
@@ -278,14 +294,18 @@ fun PostHeader(
     userAvatar: Int,
     title: String,
     commentCount: Int,
-    onCommentsClick: () -> Unit,
     collapseFraction: Float,
+    userPosts: List<Post?>,
+    onCommentsClick: () -> Unit,
+    onPostsClick: () -> Unit,
     modifier: Modifier = Modifier) {
 
     CollapsingAvatarHeader(
         collapseFraction = collapseFraction,
         userName = userName,
-        userAvatar = userAvatar
+        userAvatar = userAvatar,
+        userPosts = userPosts,
+        onPostsClick = onPostsClick
     )
 
     Spacer(Modifier.width(16.dp))
@@ -356,6 +376,10 @@ fun CollapsingAvatarHeader(
     collapseFraction: Float,
     userName: String,
     userAvatar: Int,
+    userPosts: List<Post?>,
+    onPostsClick: () -> Unit,
+    onFollowersClick: () -> Unit = {},
+    onPhotoClick: () -> Unit = {}
 ) {
     val avatarSize by animateDpAsState(
         targetValue = lerp(88.dp, 44.dp, collapseFraction),
@@ -372,13 +396,18 @@ fun CollapsingAvatarHeader(
         label = "userNameAlpha"
     )
 
-    Row {
+    val statsAlpha by animateFloatAsState(
+        targetValue = lerp(1f,0f, collapseFraction)
+    )
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp, start = 36.dp),
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Center
         ) {
             // Avatar
             Image(
@@ -405,21 +434,26 @@ fun CollapsingAvatarHeader(
                 textAlign = TextAlign.Center
             )
         }
-//        Spacer(modifier = Modifier.padding(horizontal = 1.dp))
-//        FollowElement(
-//            title = "Posts",
-//            count = 10,
-//        )
-//        Spacer(modifier = Modifier.padding(horizontal = 1.dp))
-//        FollowElement(
-//            title = "Followers",
-//            count = 10
-//        )
-//        Spacer(modifier = Modifier.padding(horizontal = 1.dp))
-//        FollowElement(
-//            title = "Photos",
-//            count = 50
-//        )
+
+        Spacer(modifier = Modifier.weight(1f))
+        Row(
+            modifier = Modifier.alpha(statsAlpha),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            FollowElement(
+                title = "Posts",
+                count = userPosts.size,
+                onClick = onPostsClick)
+            FollowElement(
+                title = "Followers",
+                count = 120,
+                onClick = onFollowersClick)
+            FollowElement(
+                title = "Photos",
+                count = 50,
+                onClick = onPhotoClick)
+        }
     }
 }
 
@@ -485,19 +519,29 @@ fun CommentsSheetContent(
 
 @Composable
 fun FollowElement(
+    modifier: Modifier = Modifier,
     title: String,
     count: Int,
-    modifier: Modifier = Modifier) {
-    Column {
+    onClick: () -> Unit = {}
+    ) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .clickable{ onClick()}
+            .padding(4.dp)
+    ) {
 
         Text(text = "$count",
-            modifier = Modifier.padding(8.dp))
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.height(1.dp))
         Text(
             text = title,
             modifier = Modifier.padding(all = 8.dp),
-            fontStyle = FontStyle.Italic
+            fontStyle = FontStyle.Normal,
+            style = MaterialTheme.typography.bodySmall
         )
     }
 }

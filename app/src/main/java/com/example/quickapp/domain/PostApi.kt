@@ -14,6 +14,9 @@ interface PostApi {
     @GET("posts/{id}")
     suspend fun getPost(@Path("id") id : Int) : Post
 
+    @GET("users/{userId}/posts")
+    suspend fun getUserPosts(@Path("userId") userId : Int) : List<Post>
+
     @POST("posts")
     suspend fun createPost(@Body post: Post) : Post
 

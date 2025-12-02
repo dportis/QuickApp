@@ -60,6 +60,16 @@ class PostViewModel(private val repository: PostRepository) : ViewModel() {
         }
     }
 
+    fun loadUserPosts(userId: Int) {
+        viewModelScope.launch {
+            try {
+                _posts.value = repository.getUserPosts(userId)
+            } catch (e: Exception) {
+                println(e)
+            }
+        }
+    }
+
     fun updateQuery(value: String) {_query.value = value}
 
     fun updateTitle(value: String) {_title.value = value}

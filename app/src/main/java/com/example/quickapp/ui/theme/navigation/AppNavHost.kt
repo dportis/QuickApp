@@ -1,6 +1,7 @@
 package com.example.quickapp.ui.theme.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -39,7 +40,20 @@ fun AppNavHost(navController: NavHostController, repository: PostRepository) {
             val viewModel : PostDetailViewModel = viewModel(
                 factory = PostDetailViewModelFactory(repository)
             )
-            PostDetailScreen(detailViewModel = viewModel, postId = id, onBack = {navController.popBackStack()})
+            PostDetailScreen(detailViewModel = viewModel, postId = id, onBack = {navController.popBackStack()},
+                onPostsClicked = {userId -> navController.navigate("user/$userId/posts")})
+        }
+        composable("user/{userId}/posts") { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId")?.toInt() ?: 0
+            val viewModel : PostViewModel = viewModel(
+                factory = PostViewModelFactory(repository)
+            )
+
+            LaunchedEffect(userId) {
+                viewModel.loadUserPosts(userId)
+            }
+            PostScreen(viewModel, onPostClick = {id -> navController.navigate("post_detail/$id")},
+                onAddPostClick = {navController.navigate("add_post")})
         }
     }
 }
