@@ -1,4 +1,4 @@
-package com.example.quickapp.ui.theme
+package com.example.quickapp.ui.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

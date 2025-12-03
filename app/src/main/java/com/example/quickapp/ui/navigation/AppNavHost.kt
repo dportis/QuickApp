@@ -1,4 +1,4 @@
-package com.example.quickapp.ui.theme.navigation
+package com.example.quickapp.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -6,14 +6,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.quickapp.AddPostScreen
-import com.example.quickapp.PostDetailScreen
-import com.example.quickapp.PostScreen
 import com.example.quickapp.domain.repo.PostRepository
-import com.example.quickapp.ui.theme.PostDetailViewModel
-import com.example.quickapp.ui.theme.PostDetailViewModelFactory
-import com.example.quickapp.ui.theme.PostViewModel
-import com.example.quickapp.ui.theme.PostViewModelFactory
+import com.example.quickapp.ui.screen.AddPostScreen
+import com.example.quickapp.ui.screen.detail.PostDetailScreen
+import com.example.quickapp.ui.screen.detail.PostDetailViewModel
+import com.example.quickapp.ui.screen.detail.PostDetailViewModelFactory
+import com.example.quickapp.ui.screen.home.PostScreen
+import com.example.quickapp.ui.screen.home.PostViewModel
+import com.example.quickapp.ui.screen.home.PostViewModelFactory
 
 @Composable
 fun AppNavHost(navController: NavHostController, repository: PostRepository) {

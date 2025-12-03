@@ -1,4 +1,4 @@
-package com.example.quickapp.ui.theme
+package com.example.quickapp.ui.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,9 +22,9 @@ class PostViewModel(private val repository: PostRepository) : ViewModel() {
     val title: StateFlow<String> = _title
     val body: StateFlow<String> = _body
 
-    val filteredPosts = combine(posts, query) {posts, q ->
+    val filteredPosts = combine(posts, query) { posts, q ->
         if (q.isBlank()) posts else posts.filter { it.title.contains(q, ignoreCase = true) }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(), emptyList())
 
 
 
