@@ -23,8 +23,10 @@ fun AppNavHost(navController: NavHostController, repository: PostRepository) {
                 factory = PostViewModelFactory(repository)
             )
             PostScreen(viewModel = viewModel,
+               navController = navController,
                onPostClick = {id -> navController.navigate("post_detail/$id")},
-               onAddPostClick = {navController.navigate("add_post")})
+               onAddPostClick = {navController.navigate("add_post")},
+               onHeaderClick = {})
        }
         composable("add_post") {
             val viewModel : PostViewModel = viewModel(
@@ -53,7 +55,22 @@ fun AppNavHost(navController: NavHostController, repository: PostRepository) {
                 viewModel.loadUserPosts(userId)
             }
             PostScreen(viewModel, onPostClick = {id -> navController.navigate("post_detail/$id")},
-                onAddPostClick = {navController.navigate("add_post")})
+                navController = navController,
+                onAddPostClick = {navController.navigate("add_post")},
+                onHeaderClick = {})
+        }
+        composable("home_screen") {
+            val viewModel : PostViewModel = viewModel(
+                factory = PostViewModelFactory(repository)
+            )
+            PostScreen(viewModel = viewModel,
+                navController = navController,
+                onPostClick = {id -> navController.navigate("post_detail/$id")},
+                onAddPostClick = {navController.navigate("add_post")},
+                onHeaderClick = {})
+        }
+        composable("profile_screen") {
+
         }
     }
 }

@@ -17,7 +17,12 @@ fun PostItem(post: Post, onPostClick: (Int) -> Unit ,  modifier: Modifier) {
         onPostClick(post.id)
     }) {
         Text(text = post.title, style = MaterialTheme.typography.titleLarge)
-        Text(text = post.body, style = MaterialTheme.typography.bodyMedium)
-        HorizontalDivider(modifier = Modifier.padding(horizontal = 4.dp), thickness = 1.dp )
+        Text(
+            text = post.body,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(bottom = 4.dp))
+        HorizontalDivider(modifier = Modifier
+            .padding(horizontal = 4.dp, vertical = 4.dp), thickness = 1.dp,
+            )
     }
 }

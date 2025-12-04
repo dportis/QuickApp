@@ -23,11 +23,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.quickapp.ui.components.PostItem
+import com.example.quickapp.ui.components.PostItemHeader
+import com.example.quickapp.ui.navigation.BottomNavigationBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PostScreen(viewModel: PostViewModel, onAddPostClick: () -> Unit, onPostClick: (Int) -> Unit, modifier: Modifier = Modifier) {
+fun PostScreen(viewModel: PostViewModel, navController: NavController, onAddPostClick: () -> Unit, onPostClick: (Int) -> Unit, onHeaderClick: (Int) -> Unit, modifier: Modifier = Modifier) {
     val postList by viewModel.filteredPosts.collectAsState()
     val query by viewModel.query.collectAsState()
     val shuffledPostList = remember(postList) {
@@ -57,6 +60,7 @@ fun PostScreen(viewModel: PostViewModel, onAddPostClick: () -> Unit, onPostClick
                 )
             )
         },
+        bottomBar = { BottomNavigationBar(navController = navController) },
         floatingActionButton = {
             FloatingActionButton(onClick = onAddPostClick) {
                 Icon(Icons.Default.Add, contentDescription = "add post")
@@ -68,6 +72,7 @@ fun PostScreen(viewModel: PostViewModel, onAddPostClick: () -> Unit, onPostClick
             .fillMaxSize()
             .padding(16.dp)) {
             items(items = shuffledPostList) { post ->
+                PostItemHeader(post.userId, onHeaderClick, modifier)
                 PostItem(post, onPostClick, modifier)
             }
         }
