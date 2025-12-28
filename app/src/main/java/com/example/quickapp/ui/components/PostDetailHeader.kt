@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.example.quickapp.model.Post
 
 @Composable
-fun PostHeader(
+fun PostDetailHeader(
     userName: String,
     userAvatar: Int,
     title: String,

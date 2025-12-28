@@ -14,6 +14,9 @@ import com.example.quickapp.ui.screen.detail.PostDetailViewModelFactory
 import com.example.quickapp.ui.screen.home.PostScreen
 import com.example.quickapp.ui.screen.home.PostViewModel
 import com.example.quickapp.ui.screen.home.PostViewModelFactory
+import com.example.quickapp.ui.screen.profile.UserProfileScreen
+import com.example.quickapp.ui.screen.profile.UserProfileViewModel
+import com.example.quickapp.ui.screen.profile.UserProfileViewModelFactory
 
 @Composable
 fun AppNavHost(navController: NavHostController, repository: PostRepository) {
@@ -26,14 +29,14 @@ fun AppNavHost(navController: NavHostController, repository: PostRepository) {
                navController = navController,
                onPostClick = {id -> navController.navigate("post_detail/$id")},
                onAddPostClick = {navController.navigate("add_post")},
-               onHeaderClick = {})
+               onHeaderClick = {userId -> navController.navigate("profile_screen/$userId")})
        }
         composable("add_post") {
             val viewModel : PostViewModel = viewModel(
                 factory = PostViewModelFactory(repository)
             )
-            AddPostScreen(viewModel = viewModel ,onPostCreated = {title, body -> {
-                navController.popBackStack()
+            AddPostScreen(viewModel = viewModel,
+                onPostCreated = {title, body -> { navController.popBackStack()
             }},
                 onCancel = {navController.popBackStack()})
         }
@@ -42,7 +45,9 @@ fun AppNavHost(navController: NavHostController, repository: PostRepository) {
             val viewModel : PostDetailViewModel = viewModel(
                 factory = PostDetailViewModelFactory(repository)
             )
-            PostDetailScreen(detailViewModel = viewModel, postId = id, onBack = {navController.popBackStack()},
+            PostDetailScreen(detailViewModel = viewModel,
+                postId = id,
+                onBack = {navController.popBackStack()},
                 onPostsClicked = {userId -> navController.navigate("user/$userId/posts")})
         }
         composable("user/{userId}/posts") { backStackEntry ->
@@ -54,7 +59,8 @@ fun AppNavHost(navController: NavHostController, repository: PostRepository) {
             LaunchedEffect(userId) {
                 viewModel.loadUserPosts(userId)
             }
-            PostScreen(viewModel, onPostClick = {id -> navController.navigate("post_detail/$id")},
+            PostScreen(viewModel,
+                onPostClick = {id -> navController.navigate("post_detail/$id")},
                 navController = navController,
                 onAddPostClick = {navController.navigate("add_post")},
                 onHeaderClick = {})
@@ -69,8 +75,22 @@ fun AppNavHost(navController: NavHostController, repository: PostRepository) {
                 onAddPostClick = {navController.navigate("add_post")},
                 onHeaderClick = {})
         }
-        composable("profile_screen") {
+        composable("profile_screen/{userId}") { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId")?.toInt() ?: 0
+            val viewModel : UserProfileViewModel = viewModel(
+              factory = UserProfileViewModelFactory(repository)
+            )
 
+            println("userId for profile screen $userId")
+
+            UserProfileScreen(
+                userId = userId,
+                userViewModel = viewModel,
+                onBack = {navController.popBackStack()},
+                onPhotoClicked = {},
+                onPostsClicked = { },
+                onFollowersClicked = {},
+            )
         }
     }
 }

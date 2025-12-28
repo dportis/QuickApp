@@ -22,7 +22,7 @@ import com.example.quickapp.model.UserPersona
 fun PostItemHeader(userId: Int, onHeaderClick: (Int) -> Unit, modifier: Modifier = Modifier) {
     val userPersona = UserPersona.fromId(userId)
     Row(modifier = modifier
-        .clickable{ onHeaderClick }
+        .clickable{ onHeaderClick(userId) }
         .padding(4.dp)
         .fillMaxWidth()
     ) {

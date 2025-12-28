@@ -29,7 +29,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.example.quickapp.R
 import com.example.quickapp.ui.components.CommentsSheetContent
 import com.example.quickapp.ui.components.PostBody
-import com.example.quickapp.ui.components.PostHeader
+import com.example.quickapp.ui.components.PostDetailHeader
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,8 +37,7 @@ fun PostDetailScreen(
     detailViewModel: PostDetailViewModel,
     postId: Int,
     onBack: () -> Unit,
-    onPostsClicked: (Int) -> Unit,
-    modifier: Modifier = Modifier) {
+    onPostsClicked: (Int) -> Unit) {
     val postState = detailViewModel.post.collectAsState()
     val commentState = detailViewModel.comments.collectAsState()
     val userPostsState = detailViewModel.posts.collectAsState()
@@ -87,7 +86,7 @@ fun PostDetailScreen(
                 .padding(paddingValues)
                 .fillMaxSize()) {
             item {
-                PostHeader(
+                PostDetailHeader(
                     userName = "User ${postState.value?.userId} ",
                     userAvatar = R.drawable.avi,
                     title = postState.value?.title ?: "Oops",
