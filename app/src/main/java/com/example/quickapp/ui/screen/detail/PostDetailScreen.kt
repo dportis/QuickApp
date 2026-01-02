@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.example.quickapp.R
+import com.example.quickapp.model.UserPersona
 import com.example.quickapp.ui.components.CommentsSheetContent
 import com.example.quickapp.ui.components.PostBody
 import com.example.quickapp.ui.components.PostDetailHeader
@@ -80,14 +81,17 @@ fun PostDetailScreen(
 
         var longerBody = ""
         repeat(5) {longerBody += postState.value?.body ?: ""}
-        println("UserID: ${postState.value?.userId}")
+        var persona = ""
+        if (postState.value?.userId != null){
+            persona = UserPersona.fromId(postState.value!!.userId).displayName
+        }
         LazyColumn(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()) {
             item {
                 PostDetailHeader(
-                    userName = "User ${postState.value?.userId} ",
+                    userName = persona,
                     userAvatar = R.drawable.avi,
                     title = postState.value?.title ?: "Oops",
                     commentCount = commentState.value.size,

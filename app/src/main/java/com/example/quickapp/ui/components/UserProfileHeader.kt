@@ -2,9 +2,11 @@ package com.example.quickapp.ui.components
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -36,12 +38,18 @@ fun UserProfileHeader(
         onFollowersClick = onFollowerClick
     )
 
-    Spacer(Modifier.width(16.dp))
+    Spacer(Modifier.height(8.dp))
 
-    LazyRow {
+    Text(
+        text = "Albums",
+        style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+    )
+    LazyRow(modifier = Modifier.padding(horizontal = 8.dp)) {
         items(albums) {
             album ->
             AlbumItem(album = album)
+            Spacer(Modifier.width(4.dp))
         }
     }
     Spacer(Modifier.height(16.dp))

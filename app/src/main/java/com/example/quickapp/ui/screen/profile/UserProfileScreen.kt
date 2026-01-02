@@ -1,8 +1,16 @@
 package com.example.quickapp.ui.screen.profile
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,7 +24,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.example.quickapp.model.UserPersona
+import com.example.quickapp.ui.components.TodosItemCard
 import com.example.quickapp.ui.components.UserProfileHeader
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,8 +75,9 @@ fun UserProfileScreen(
                 .fillMaxSize()) {
 
             val user = userState.value
-            if (user != null){
+            if (user != null) {
                 val persona = UserPersona.fromId(user.id)
+                // 1. Header Item
                 item {
                     UserProfileHeader(
                         user = user,
@@ -76,7 +87,35 @@ fun UserProfileScreen(
                         onPostClick = onPostsClicked,
                         onFollowerClick = onFollowersClicked,
                         albums = albumsState.value,
-                        todos = todosState.value)
+                        todos = todosState.value
+                    )
+                }
+
+                item {
+                    Spacer(Modifier.height(8.dp))
+
+                    Text(
+                        text = "To-dos",
+                        style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+
+                    LazyHorizontalGrid(
+                        rows = GridCells.Fixed(3),
+                        modifier = Modifier
+                            .height(124.dp) // Fixed height is correct here
+                            .fillMaxWidth(),
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(todosState.value) { todo ->
+                            TodosItemCard(
+                                todos = todo,
+                                onCheckedChange = {}
+                            )
+                        }
+                    }
                 }
             }
         }
