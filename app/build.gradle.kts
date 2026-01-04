@@ -71,13 +71,13 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.material3)
-    implementation("com.squareup.retrofit2:retrofit:3.0.0")
-    implementation("com.google.code.gson:gson:2.13.2")
-    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
-    implementation("androidx.navigation:navigation-compose:2.9.6")
-
-    implementation("com.google.dagger:hilt-android:2.57.2")
-    kapt("com.google.dagger:hilt-android-compiler:2.57.2")
+    implementation(libs.retrofit)
+    implementation(libs.gson)
+    implementation(libs.converter.gson)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
 
 
 
