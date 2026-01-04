@@ -2,8 +2,9 @@ package com.example.quickapp.domain.repo
 
 import com.example.quickapp.domain.RetrofitInstance
 import com.example.quickapp.model.Post
+import javax.inject.Inject
 
-class PostRepository {
+class PostRepository @Inject constructor(){
 
     suspend fun getPosts() = RetrofitInstance.api.getPosts()
     suspend fun getPost(id: Int) = RetrofitInstance.api.getPost(id)

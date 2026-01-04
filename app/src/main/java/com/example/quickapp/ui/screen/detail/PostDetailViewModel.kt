@@ -5,11 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.quickapp.domain.repo.PostRepository
 import com.example.quickapp.model.Comments
 import com.example.quickapp.model.Post
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PostDetailViewModel(private val repository: PostRepository) : ViewModel() {
+@HiltViewModel
+class PostDetailViewModel @Inject constructor(private val repository: PostRepository) : ViewModel() {
     private val _post = MutableStateFlow<Post?>(null)
     private val _posts = MutableStateFlow<List<Post?>>(emptyList())
     private val _comments = MutableStateFlow<List<Comments>>(emptyList())

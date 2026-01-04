@@ -8,11 +8,14 @@ import com.example.quickapp.model.Photos
 import com.example.quickapp.model.Post
 import com.example.quickapp.model.Todos
 import com.example.quickapp.model.User
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class UserProfileViewModel(private val repository: PostRepository): ViewModel() {
+@HiltViewModel
+class UserProfileViewModel @Inject constructor(private val repository: PostRepository): ViewModel() {
     private val _user = MutableStateFlow<User?>(null)
     private val _albums = MutableStateFlow<List<Album>>(emptyList())
     private val _photos = MutableStateFlow<List<Photos>>(emptyList())

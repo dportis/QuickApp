@@ -16,9 +16,14 @@ import com.example.quickapp.ui.components.AvatarElement
 import com.example.quickapp.ui.components.PostTitleContent
 import com.example.quickapp.ui.navigation.AppNavHost
 import com.example.quickapp.ui.theme.QuickAppTheme
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var postRepository: PostRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -27,9 +32,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             QuickAppTheme {
                 val navController = rememberNavController()
-                val repository = PostRepository()
 
-                AppNavHost(navController,repository)
+                AppNavHost(navController,postRepository)
                 }
             }
         }

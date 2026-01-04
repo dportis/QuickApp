@@ -4,14 +4,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.quickapp.domain.repo.PostRepository
 import com.example.quickapp.model.Post
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PostViewModel(private val repository: PostRepository) : ViewModel() {
+@HiltViewModel
+class PostViewModel @Inject constructor(private val repository: PostRepository) : ViewModel() {
 
     private val _posts = MutableStateFlow<List<Post>>(emptyList())
     private val _query = MutableStateFlow("")
